@@ -15,7 +15,7 @@ import java.util.List;
 public class CategoryAdapter extends BaseExpandableListAdapter {
     private Context context;
     private List<String> categories;
-    private HashMap<String, List<String> > categoryHashMap;
+    private HashMap<String, List<String> > categoryHashMap;//Should be HashMap<String, List<Note>>
     private static ILaunchEditDialogListener launchEditDialogListener;
 
     public CategoryAdapter(Context context, List<String> categories, HashMap<String, List<String>> categoryHashMap) {

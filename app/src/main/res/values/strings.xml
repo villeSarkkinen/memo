@@ -4,6 +4,7 @@
     <string name="actnClear">Clear</string>
     <string name="btnOk">OK</string>
     <string name="btnCancel">Cancel</string>
+    <string name="btnEdit">Edit</string>
     <string name="titlAdd">Add item</string>
     <string name="titlEdit">Edit item</string>
 

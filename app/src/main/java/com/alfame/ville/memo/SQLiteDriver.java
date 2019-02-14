@@ -2,6 +2,7 @@ package com.alfame.ville.memo;
 
 import java.util.ArrayList;
 
+//Home of database code, if methods need to be called from MainActivity add them to the interfaces like these methods
 public class SQLiteDriver implements IStorageDriver {
     @Override
     public ArrayList loadItemsList() {

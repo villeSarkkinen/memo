@@ -1,5 +1,6 @@
 package com.alfame.ville.memo;
 
+
 import java.util.ArrayList;
 
 public class StorageOperations implements IStorageOperations {

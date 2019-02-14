@@ -1,6 +1,9 @@
 package com.alfame.ville.memo;
 
 import android.content.DialogInterface;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,13 +23,13 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
     private ExpandableListView listView;
     private CategoryAdapter categoryAdapter;
     private List<String> categories;
-    private HashMap<String, List<String>> categoryHashMap;
+    private HashMap<String, List<String>> categoryHashMap;//Should be HashMap<String, List<Note>>
     private EditText et;
     IStorageOperations storageOperations;
 
     //ANTTI ADD
-    private ArrayList<Note> notes;
-    private String[] cats;
+    private ArrayList<Note> notes;//Same as hashmap?
+    private String[] cats;//Same as categories?
     private SQLiteDatabase database;
     private Resources res;
     //END
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Setting up SQLserver as method of operations
         storageOperations = new StorageOperations(new SQLiteDriver());
 
         listView = findViewById(R.id.noteListView);
@@ -89,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
             System.out.println("Database exception: "+e);
         }
         //END
-
+        /* ////For testing
         List<String> firstItems = new ArrayList<>();
         firstItems.add("FirstFirst item");
 
@@ -97,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
         secondItems.add("SecondFirst item");
 
         categoryHashMap.put(categories.get(0), firstItems);
-        categoryHashMap.put(categories.get(1), secondItems);
+        categoryHashMap.put(categories.get(1), secondItems);*/
     }
 
       private void databaseTesty() {//for testing
@@ -155,7 +160,10 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
 
         final View v = inflater.inflate(R.layout.dialog_layout, null);
 
+        //Find all datafields added to dialog layout
         et = v.findViewById(R.id.eTValue);
+
+        //Generate category options from categories for selector inside v
 
         builder.setTitle(R.string.titlAdd);
         builder.setView(v);
@@ -168,14 +176,15 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
         builder.setPositiveButton(R.string.btnOk, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                categoryHashMap.get(categories.get(0)).add(et.getText().toString());
+                categoryHashMap.get(categories.get(0)).add(et.getText().toString());//Replace et.getText().toString with new Note object build from datafields above
+                //If new category add category to categories
+                //storageOperations.addItem(note) Needs to be edited to correct form in the interfaces and implementations
                 categoryAdapter.notifyDataSetChanged();
             }
         });
 
         builder.create().show();
     }
-
 
     @Override
     public void launchEditDialog(final int groupPosition, final int childPosition) {
@@ -187,7 +196,10 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
 
         final View v = inflater.inflate(R.layout.dialog_layout, null);
 
+        //Find all datafields added to dialog layout
         et = v.findViewById(R.id.eTValue);
+
+        //Generate category options from categories for selector inside v
 
         builder.setTitle(R.string.titlEdit);
         builder.setView(v);
@@ -200,13 +212,14 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
         builder.setPositiveButton(R.string.btnOk, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                categoryHashMap.get(categories.get(groupPosition)).set(childPosition, et.getText().toString());
+                categoryHashMap.get(categories.get(groupPosition)).set(childPosition, et.getText().toString());//Replace et.getText().toString with edited Note object
+                //if item is changed to different category and old category is left empty, remove category
+                //storageOperations.editItem(noteObject); Needs to be added to the interfaces and implementations
                 categoryAdapter.notifyDataSetChanged();
             }
         });
         builder.create().show();
     }
-
 
     @Override
     public void onClick(View v) {

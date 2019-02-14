@@ -3,8 +3,8 @@ package com.alfame.ville.memo;
 import java.util.ArrayList;
 
 public interface IStorageDriver {
-    public abstract ArrayList loadItemsList();
-    public abstract void addItem(String item);
-    public abstract void removeItem(String item);
+    public abstract ArrayList loadItemsList();//Should be updated to what you want to get from database for initial data
+    public abstract void addItem(String item);//String item should be Note object
+    public abstract void removeItem(String item);//Ditto, also same should be done in IStorageOperations and StorageOperations and SQLiteDriver should be updated to match
     public abstract void removeAll();
 }
