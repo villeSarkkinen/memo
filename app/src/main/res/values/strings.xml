@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Memo</string>
+    <string name="actnExit">Exit</string>
+    <string name="actnClear">Clear</string>
+    <string name="btnOk">OK</string>
+    <string name="btnCancel">Cancel</string>
+    <string name="titlAdd">Add item</string>
+    <string name="titlEdit">Edit item</string>
+</resources>
