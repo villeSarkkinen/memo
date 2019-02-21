@@ -7,4 +7,5 @@ public interface IStorageDriver {
     public abstract void addItem(String item);//String item should be Note object
     public abstract void removeItem(String item);//Ditto, also same should be done in IStorageOperations and StorageOperations and SQLiteDriver should be updated to match
     public abstract void removeAll();
+    public abstract void createDatabase();
 }

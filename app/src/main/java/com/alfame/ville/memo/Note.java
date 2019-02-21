@@ -13,6 +13,7 @@ public class Note {
     private int priority;
     private Date date;
     private boolean struck;
+    //private Date deadline;
 
     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -66,5 +67,15 @@ public class Note {
         Date date = new Date();
         System.out.println(" Datecheck: "+dateFormat.format(date));
     }
+    
+    public void printNote(){
+        System.out.println(
 
+                "ID: "+id+
+                "Title: "+title+
+                "Text: "+text
+                +"Category: "+category
+                +"Struck: "+struck
+        );
+    }
 }

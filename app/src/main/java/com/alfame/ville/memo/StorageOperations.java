@@ -30,4 +30,9 @@ public class StorageOperations implements IStorageOperations {
     public void removeAll() {
 
     }
+
+    @Override
+    public void createDatabase() {
+
+    }
 }

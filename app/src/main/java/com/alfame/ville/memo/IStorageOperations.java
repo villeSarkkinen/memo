@@ -8,4 +8,5 @@ public interface IStorageOperations {
     public abstract void addItem(String item);
     public abstract void removeItem(String item);
     public abstract void removeAll();
+    public abstract void createDatabase();
 }
