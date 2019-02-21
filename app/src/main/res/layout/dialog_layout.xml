@@ -2,17 +2,50 @@
 <!--
 Layout for edit and add item dialog
 -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <EditText
+        android:id="@+id/noteEditTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/eTValue"
-        />
+        android:hint="@string/lblTitle"
+        android:inputType="textCapSentences" />
+
+    <EditText
+        android:id="@+id/noteEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="@string/lblText"
+        android:inputType="textCapSentences" />
+
+    <CheckBox
+        android:id="@+id/newCategoryCB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/lblNewCategory" />
+
+    <EditText
+        android:id="@+id/noteNewCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="@string/lblCategory"
+        android:visibility="gone" />
+
+    <Spinner
+        android:id="@+id/noteOldCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
     <!--
     Add inputs for every point of data in Note class (Title, deadline, date...)
     -->
+
 
     <!--
     Checkbox asking if category is new, if not checked show picker populated with existing categories

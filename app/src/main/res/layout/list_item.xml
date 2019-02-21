@@ -11,10 +11,14 @@ Layout for individual Note item
         android:padding="16dp"
         android:id="@+id/noteTitle"
         />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:id="@+id/noteText"
+        />
 
-    <!--
-     Add Views to show points of data in Note (title, deadline, date...)
-     -->
+
 
     <Button
         android:layout_width="wrap_content"

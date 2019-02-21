@@ -103,7 +103,7 @@ public class SQLiteDriver implements IStorageDriver {
         sql.append(res.getString(R.string.noteStruck)   +" BOOLEAN );");
         database.execSQL(sql.toString());
     }
-
+/*
     private void _createDatabase() {
 
         String name = res.getString(R.string.dbName);
@@ -113,5 +113,5 @@ public class SQLiteDriver implements IStorageDriver {
 
 
 
-    }
+    }*/
 }

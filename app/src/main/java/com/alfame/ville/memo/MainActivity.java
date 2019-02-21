@@ -7,11 +7,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ListAdapter;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,9 +31,11 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
     private ExpandableListView listView;
     private CategoryAdapter categoryAdapter;
     private List<String> categories;
-    private HashMap<String, List<String>> categoryHashMap;//Should be HashMap<String, List<Note>>
-    private EditText et;
+    private HashMap<String, List<Note>> categoryHashMap;
+    //private Spinner sp;
+    //private EditText et;
     IStorageOperations storageOperations;
+
 
     //ANTTI ADD
     private ArrayList<Note> notes;//Same as hashmap?
@@ -40,6 +50,14 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //LayoutInflater inflater = LayoutInflater.from(this);
+
+        //View v = inflater.inflate(R.layout.dialog_layout, null);
+        //sp = v.findViewById(R.id.noteOldCategory);
+
+        //initData();
+
+
         /*
         res=getResources();
         idCount=0;
@@ -53,9 +71,14 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
         //storageOperations.createDatabase();
 
         listView = findViewById(R.id.noteListView);
-        initData();
+        //initData();
+
+        categories = new ArrayList<>();
+        categoryHashMap = new HashMap<>();
+
         categoryAdapter = new CategoryAdapter(this, categories, categoryHashMap);
         listView.setAdapter(categoryAdapter);
+
 
         Button addBtn = findViewById(R.id.btnAdd);
 
@@ -79,8 +102,6 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
     //END
 
     private void initData() {
-        categories = new ArrayList<>();
-        categoryHashMap = new HashMap<>();
 
         //categories.add("First");
         //categories.add("Second");
@@ -101,10 +122,8 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
 
 
 
-
-
-
     private void launchAddDialog() {
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -112,10 +131,34 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
 
         final View v = inflater.inflate(R.layout.dialog_layout, null);
 
-        //Find all datafields added to dialog layout
-        et = v.findViewById(R.id.eTValue);
 
-        //Generate category options from categories for selector inside v
+        final CheckBox cb = v.findViewById(R.id.newCategoryCB);
+        final TextView newCategory = v.findViewById(R.id.noteNewCategory);
+
+        final EditText titleET = v.findViewById(R.id.noteEditTitle);
+        final EditText textET = v.findViewById(R.id.noteEditText);
+
+        final ArrayAdapter<String> spa;
+        final Spinner oldCategory = v.findViewById(R.id.noteOldCategory);
+        spa = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, categories);
+        spa.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        oldCategory.setAdapter(spa);
+
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    newCategory.setVisibility(View.VISIBLE);
+                    oldCategory.setVisibility(View.GONE);
+                } else {
+                    newCategory.setVisibility(View.GONE);
+                    oldCategory.setVisibility(View.VISIBLE);
+                }
+
+            }
+
+
+        });
 
         builder.setTitle(R.string.titlAdd);
         builder.setView(v);
@@ -125,21 +168,39 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
                 dialog.dismiss();
             }
         });
+
         builder.setPositiveButton(R.string.btnOk, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                categoryHashMap.get(categories.get(0)).add(et.getText().toString());//Replace et.getText().toString with new Note object build from datafields above
-                //If new category add category to categories
-                //storageOperations.addItem(note, categoria) Needs to be edited to correct form in the interfaces and implementations
+                String category;
+                if (cb.isChecked())
+                    category = newCategory.getText().toString();
+                else
+                    category = oldCategory.getSelectedItem().toString();
+
+                Note note = new Note(titleET.getText().toString(), textET.getText().toString(), category);
+                if (categoryHashMap.containsKey(category)) {
+                    categoryHashMap.get(category).add(note);
+                }
+                else
+                {
+                    categories.add(category);
+                    ArrayList<Note> notes = new ArrayList<>();
+                    notes.add(note);
+                    categoryHashMap.put(categories.get(categories.size() - 1), notes);
+                }
+                //storageOperations.addItem(note);
                 categoryAdapter.notifyDataSetChanged();
+                spa.notifyDataSetChanged();
             }
         });
 
         builder.create().show();
     }
 
+
     @Override
-    public void launchEditDialog(final int groupPosition, final int childPosition) {
+    public void launchEditDialog(final int groupPosition, final int childPosition, final Note note) {
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -148,12 +209,37 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
 
         final View v = inflater.inflate(R.layout.dialog_layout, null);
 
-        //Find all datafields added to dialog layout
-        et = v.findViewById(R.id.eTValue);
 
-        //Generate category options from categories for selector inside v
+        final CheckBox cb = v.findViewById(R.id.newCategoryCB);
+        final TextView newCategory = v.findViewById(R.id.noteNewCategory);
 
-        builder.setTitle(R.string.titlEdit);
+        final EditText titleET = v.findViewById(R.id.noteEditTitle);
+        final EditText textET = v.findViewById(R.id.noteEditText);
+
+        final ArrayAdapter<String> spa;
+        final Spinner oldCategory = v.findViewById(R.id.noteOldCategory);
+        spa = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, categories);
+        spa.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        oldCategory.setAdapter(spa);
+
+
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    newCategory.setVisibility(View.VISIBLE);
+                    oldCategory.setVisibility(View.GONE);
+                } else {
+                    newCategory.setVisibility(View.GONE);
+                    oldCategory.setVisibility(View.VISIBLE);
+                }
+
+            }
+
+
+        });
+
+        builder.setTitle(R.string.titlAdd);
         builder.setView(v);
         builder.setNegativeButton(R.string.btnCancel, new DialogInterface.OnClickListener() {
             @Override
@@ -161,19 +247,42 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
                 dialog.dismiss();
             }
         });
+
         builder.setPositiveButton(R.string.btnOk, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //if test if new caterogy
-                //categories.add("uusi kategoria");
-                //List<String> uusiLista = new ArrayList<>();
-                //categoryHashMap.put(categories.get(categories.size() -1), uusiLista);
-                categoryHashMap.get(categories.get(groupPosition)).set(childPosition, et.getText().toString());//Replace et.getText().toString with edited Note object
-                //if item is changed to different category and old category is left empty, remove category
-                //storageOperations.editItem(noteObject); Needs to be added to the interfaces and implementations
+                String category;
+
+                if (cb.isChecked())
+                    category = newCategory.getText().toString();
+                else {
+                    category = oldCategory.getSelectedItem().toString();
+                    if (!note.getCategory().equals(category)) {
+                        if (categoryHashMap.get(category).size() == 1) {
+                            categoryHashMap.remove(category);
+                            categories.remove(category);
+                        }
+                        categoryHashMap.get(category).remove(childPosition);
+                    }
+                    note.setNote(titleET.getText().toString(), textET.getText().toString(),
+                            category);
+                }
+                if (categoryHashMap.containsKey(category)) {
+                    categoryHashMap.get(category).set(childPosition, note);
+                }
+                else
+                {
+                    categories.add(category);
+                    ArrayList<Note> notes = new ArrayList<>();
+                    notes.add(note);
+                    categoryHashMap.put(categories.get(categories.size() - 1), notes);
+                }
+                //storageOperations.addItem(note);
                 categoryAdapter.notifyDataSetChanged();
+                spa.notifyDataSetChanged();
             }
         });
+
         builder.create().show();
     }
 

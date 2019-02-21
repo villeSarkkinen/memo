@@ -18,12 +18,12 @@ public class Note {
     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 
-    Note(String title, String text, String category, int priority, boolean struck){
+    Note(String title, String text, String category){
         this.title=title;
         this.text=text;
         this.category=category;
         this.priority=priority;
-        this.struck=struck;
+        this.struck= false;
 
         Date date = new Date();
         System.out.println(" Datecheck: "+dateFormat.format(date));
@@ -56,12 +56,12 @@ public class Note {
 
 
     //easier to set all at once thru edit
-    public void setNote(String title, String text, String category, int priority, boolean struck){
+    public void setNote(String title, String text, String category){
         this.title=title;
         this.text=text;
         this.category=category;
-        this.priority=priority;
-        this.struck=struck;
+        //this.priority=priority;
+        //this.struck=struck;
 
 
         Date date = new Date();

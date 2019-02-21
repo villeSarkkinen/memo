@@ -15,17 +15,17 @@ import java.util.List;
 public class CategoryAdapter extends BaseExpandableListAdapter {
     private Context context;
     private List<String> categories;
-    private HashMap<String, List<String> > categoryHashMap;//Should be HashMap<String, List<Note>>
+    private HashMap<String, List<Note> > categoryHashMap;//Should be HashMap<String, List<Note>>
     private static ILaunchEditDialogListener launchEditDialogListener;
 
-    public CategoryAdapter(Context context, List<String> categories, HashMap<String, List<String>> categoryHashMap) {
+    public CategoryAdapter(Context context, List<String> categories, HashMap<String, List<Note>> categoryHashMap) {
         this.context = context;
         this.categories = categories;
         this.categoryHashMap = categoryHashMap;
     }
 
     public interface ILaunchEditDialogListener {
-        abstract void launchEditDialog(int groupPosition, int childPosition);
+        abstract void launchEditDialog(int groupPosition, int childPosition, Note note);
     }
 
     public static void setLaunchEditDialogListener(ILaunchEditDialogListener listener) {
@@ -84,16 +84,18 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.list_item, null);
         }
-        TextView tv = convertView.findViewById(R.id.noteTitle);
+        TextView title = convertView.findViewById(R.id.noteTitle);
         Button btn = convertView.findViewById(R.id.itemBtn);
+
+        final Note note = categoryHashMap.get(categories.get(groupPosition)).get(childPosition);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchEditDialogListener.launchEditDialog(groupPosition, childPosition);
+                launchEditDialogListener.launchEditDialog(groupPosition, childPosition, note);
             }
         });
-        tv.setText(getChild(groupPosition, childPosition).toString());
+        title.setText(note.getTitle());
         return convertView;
     }
 
