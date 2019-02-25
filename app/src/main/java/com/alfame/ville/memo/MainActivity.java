@@ -66,7 +66,10 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
 
 
         //Setting up SQLserver as method of operations
-        storageOperations = new StorageOperations(new SQLiteDriver());
+        File file = this.getDatabasePath(res.getString(R.string.dbName));
+        System.out.println(this.getDatabasePath(res.getString(R.string.dbName)));
+        //ANTTI need filepath for database!!!
+        storageOperations = new StorageOperations(new SQLiteDriver(file));
 
         //storageOperations.createDatabase();
 
@@ -88,18 +91,6 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
         CategoryAdapter.setLaunchEditDialogListener(this);
 
     }
-    //ANTTI ADD
-    private void getLists() {//gets categories from Strings resources
-
-        cats = getResources().getStringArray(R.array.categoryList);
-
-        for(int i=0;i<cats.length;i++){
-            categories.add(cats[i]);
-        }
-
-        System.out.println("HEY "+cats[0]);
-    }
-    //END
 
     private void initData() {
 
@@ -178,7 +169,8 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
                 else
                     category = oldCategory.getSelectedItem().toString();
 
-                Note note = new Note(titleET.getText().toString(), textET.getText().toString(), category);
+                //ANTTI WAS HERE, fixed constructor, gets id from storage and struck=false
+                Note note = new Note(storageOperations.getidCount(),titleET.getText().toString(), textET.getText().toString(), category,false);
                 if (categoryHashMap.containsKey(category)) {
                     categoryHashMap.get(category).add(note);
                 }
@@ -265,7 +257,9 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
                         categoryHashMap.get(category).remove(childPosition);
                     }
                     note.setNote(titleET.getText().toString(), textET.getText().toString(),
-                            category);
+                            category,false);
+                    //ANTTI WAS HERE
+
                 }
                 if (categoryHashMap.containsKey(category)) {
                     categoryHashMap.get(category).set(childPosition, note);

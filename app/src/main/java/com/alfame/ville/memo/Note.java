@@ -18,16 +18,34 @@ public class Note {
     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 
-    Note(String title, String text, String category){
+    //dev phase constructor
+    Note(int id,String title,String text,String category, Boolean struck){
+        this.id=id;
         this.title=title;
         this.text=text;
         this.category=category;
-        this.priority=priority;
-        this.struck= false;
+        this.struck = struck;
+
+    }
+
+    //replace with this once date/deadline needed
+    /*
+    Note(int id, String title, String text, String category, Boolean struck, Date deadline){
+        this.title=title;
+        this.text=text;
+        this.category=category;
+        this.struck=struck;
+        this.deadline= deadline;
+
 
         Date date = new Date();
         System.out.println(" Datecheck: "+dateFormat.format(date));
 
+    }
+    */
+
+    public int getID(){
+        return id;
     }
 
     public String getTitle() {
@@ -56,26 +74,26 @@ public class Note {
 
 
     //easier to set all at once thru edit
-    public void setNote(String title, String text, String category){
+    public void setNote(String title, String text, String category, boolean struck){
         this.title=title;
         this.text=text;
         this.category=category;
-        //this.priority=priority;
-        //this.struck=struck;
+        this.priority=priority;
+        this.struck=struck;
 
 
         Date date = new Date();
         System.out.println(" Datecheck: "+dateFormat.format(date));
     }
-    
+
     public void printNote(){
         System.out.println(
 
                 "ID: "+id+
-                "Title: "+title+
-                "Text: "+text
-                +"Category: "+category
-                +"Struck: "+struck
+                        "Title: "+title+
+                        "Text: "+text
+                        +"Category: "+category
+                        +"Struck: "+struck
         );
     }
 }
