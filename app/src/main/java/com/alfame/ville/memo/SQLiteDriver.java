@@ -66,8 +66,7 @@ public class SQLiteDriver implements IStorageDriver {
             Note newNote = new Note(cl.getInt(0),
                     cl.getString(1),
                     cl.getString(2),
-                    cl.getString(3),
-                    struckB);
+                    cl.getString(3));
             noteList.add(newNote);
 
             //makes sure idCount stays ahead of last id
@@ -223,11 +222,11 @@ public class SQLiteDriver implements IStorageDriver {
         switch (selection){
             case 1:
                 //WRITING
-                Note newNote = new Note(idCount,"NJOICE","I FEEL IT and THINGS","Anttis kaka",false);
+                Note newNote = new Note(idCount,"NJOICE","I FEEL IT and THINGS","Anttis kaka");
                 addItem(newNote);
-                Note newNote1 = new Note(idCount,"Wwenks","wih wuah wauau ankan kanka","Anttis kaka",false);
+                Note newNote1 = new Note(idCount,"Wwenks","wih wuah wauau ankan kanka","Anttis kaka");
                 addItem(newNote1);
-                Note newNote2 = new Note(idCount,"Hi","How are yeeet","Anttis kaka",false);
+                Note newNote2 = new Note(idCount,"Hi","How are yeeet","Anttis kaka");
                 addItem(newNote2);
                 break;
 
@@ -283,7 +282,6 @@ public class SQLiteDriver implements IStorageDriver {
             sql.append(textName  +" VARCHAR(255),");
             sql.append(categoryName     +" VARCHAR(255),");
             //sql.append(res.getString(R.string.noteDate)     +" VARCHAR(15),");
-            //sql.append(res.getString(R.string.notePriority) +" INTEGER,");
             sql.append(struckName   +" BOOLEAN );");
             database.execSQL(sql.toString());
             System.out.println("createTable SQL CODE: "+sql);

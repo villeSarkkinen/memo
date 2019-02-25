@@ -10,7 +10,6 @@ public class Note {
     private String title;
     private String text;
     private String category;
-    private int priority;
     private Date date;
     private boolean struck;
     //private Date deadline;
@@ -19,12 +18,12 @@ public class Note {
 
 
     //dev phase constructor
-    Note(int id,String title,String text,String category, Boolean struck){
+    Note(int id,String title,String text,String category){
         this.id=id;
         this.title=title;
         this.text=text;
         this.category=category;
-        this.struck = struck;
+        this.struck = false;
 
     }
 
@@ -60,10 +59,6 @@ public class Note {
         return category;
     }
 
-    public int getPriority() {
-        return priority;
-    }
-
     public Date getDate() {
         return date;
     }
@@ -72,15 +67,18 @@ public class Note {
         return struck;
     }
 
+    public void setStruck(Boolean struck){
+        this.struck=struck;
+
+    }
+
 
     //easier to set all at once thru edit
     public void setNote(String title, String text, String category, boolean struck){
         this.title=title;
         this.text=text;
         this.category=category;
-        this.priority=priority;
         this.struck=struck;
-
 
         Date date = new Date();
         System.out.println(" Datecheck: "+dateFormat.format(date));

@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
                     category = oldCategory.getSelectedItem().toString();
 
                 //ANTTI WAS HERE, fixed constructor, gets id from storage and struck=false
-                Note note = new Note(storageOperations.getidCount(),titleET.getText().toString(), textET.getText().toString(), category,false);
+                Note note = new Note(storageOperations.getidCount(),titleET.getText().toString(), textET.getText().toString(), category);
                 if (categoryHashMap.containsKey(category)) {
                     categoryHashMap.get(category).add(note);
                 }
