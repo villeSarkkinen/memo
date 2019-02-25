@@ -5,8 +5,9 @@ import java.util.ArrayList;
 
 public interface IStorageOperations {
     public abstract ArrayList LoadItemsList();
-    public abstract void addItem(String item);
-    public abstract void removeItem(String item);
+    public abstract void addItem(Note note);
+    public abstract void removeItem(Note note);
     public abstract void removeAll();
     public abstract void createDatabase();
+    public abstract int getidCount();
 }
