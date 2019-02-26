@@ -17,12 +17,12 @@ public class StorageOperations implements IStorageOperations {
     }
 
     @Override
-    public void addItem(String item) {
+    public void addItem(Note note) {
 
     }
 
     @Override
-    public void removeItem(String item) {
+    public void removeItem(Note note) {
 
     }
 
@@ -34,5 +34,10 @@ public class StorageOperations implements IStorageOperations {
     @Override
     public void createDatabase() {
 
+    }
+
+    @Override
+    public int getidCount() {
+        return 0;
     }
 }

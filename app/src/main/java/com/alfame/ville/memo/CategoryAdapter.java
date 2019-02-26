@@ -1,7 +1,7 @@
 package com.alfame.ville.memo;
 
 import android.content.Context;
-import android.util.Log;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +16,7 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
     private Context context;
     private List<String> categories;
     private HashMap<String, List<Note> > categoryHashMap;//Should be HashMap<String, List<Note>>
-    private static ILaunchEditDialogListener launchEditDialogListener;
+    private static IMainActivityActionListener MainActivityActionListener;
 
     public CategoryAdapter(Context context, List<String> categories, HashMap<String, List<Note>> categoryHashMap) {
         this.context = context;
@@ -24,12 +24,14 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         this.categoryHashMap = categoryHashMap;
     }
 
-    public interface ILaunchEditDialogListener {
+    public interface IMainActivityActionListener {
         abstract void launchEditDialog(int groupPosition, int childPosition, Note note);
+        abstract void strikeItem(int groupPosition, int childPosition, boolean isStruck);
+        abstract void removeItem(int groupPosition, int childPosition);
     }
 
-    public static void setLaunchEditDialogListener(ILaunchEditDialogListener listener) {
-        launchEditDialogListener = listener;
+    public static void setMainActivityActionListener(IMainActivityActionListener listener) {
+        MainActivityActionListener = listener;
     }
 
     @Override
@@ -85,18 +87,50 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.list_item, null);
         }
         TextView title = convertView.findViewById(R.id.noteTitle);
-        Button btn = convertView.findViewById(R.id.itemBtn);
+        TextView text = convertView.findViewById(R.id.noteText);
+        TextView date = convertView.findViewById(R.id.noteDate);
+        Button editBtn = convertView.findViewById(R.id.itemBtn);
+        Button removeBtn = convertView.findViewById(R.id.itemRemove);
+        Button doneBtn = convertView.findViewById(R.id.itemDone);
 
         final Note note = categoryHashMap.get(categories.get(groupPosition)).get(childPosition);
 
-        btn.setOnClickListener(new View.OnClickListener() {
+        if (note.isStruck())
+            doneBtn.setText(R.string.btnUndo);
+        else
+            doneBtn.setText(R.string.btndone);
+
+        editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchEditDialogListener.launchEditDialog(groupPosition, childPosition, note);
+                MainActivityActionListener.launchEditDialog(groupPosition, childPosition, note);
             }
         });
-        title.setText(note.getTitle());
+        removeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivityActionListener.removeItem(groupPosition, childPosition);
+            }
+        });
+        doneBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivityActionListener.strikeItem(groupPosition, childPosition, !note.isStruck());
+            }
+        });
+
+        setTextAndStrike(title, note.getTitle(), note.isStruck());
+        setTextAndStrike(text, note.getText(), note.isStruck());
+        setTextAndStrike(date, note.getDate().toString(), note.isStruck());
         return convertView;
+    }
+
+    private void setTextAndStrike(TextView v, String txt, boolean strike) {
+        v.setText(txt);
+        if (strike)
+            v.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        else
+            v.setPaintFlags(0);
     }
 
     @Override

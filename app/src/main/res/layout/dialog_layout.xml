@@ -42,6 +42,7 @@ Layout for edit and add item dialog
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
+
     <!--
     Add inputs for every point of data in Note class (Title, deadline, date...)
     -->

@@ -2,12 +2,9 @@ package com.alfame.ville.memo;
 
 import android.content.DialogInterface;
 import android.content.res.Resources;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -16,9 +13,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.ListAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import java.io.File;
@@ -26,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements CategoryAdapter.ILaunchEditDialogListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements CategoryAdapter.IMainActivityActionListener, View.OnClickListener {
 
     private ExpandableListView listView;
     private CategoryAdapter categoryAdapter;
@@ -66,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
 
 
         //Setting up SQLserver as method of operations
+        res = getResources();
         File file = this.getDatabasePath(res.getString(R.string.dbName));
         System.out.println(this.getDatabasePath(res.getString(R.string.dbName)));
         //ANTTI need filepath for database!!!
@@ -88,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
         addBtn.setOnClickListener(this);
 
 
-        CategoryAdapter.setLaunchEditDialogListener(this);
+        CategoryAdapter.setMainActivityActionListener(this);
 
     }
 
@@ -207,6 +203,9 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
 
         final EditText titleET = v.findViewById(R.id.noteEditTitle);
         final EditText textET = v.findViewById(R.id.noteEditText);
+        titleET.setText(note.getTitle());
+        textET.setText(note.getText());
+
 
         final ArrayAdapter<String> spa;
         final Spinner oldCategory = v.findViewById(R.id.noteOldCategory);
@@ -247,20 +246,20 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
 
                 if (cb.isChecked())
                     category = newCategory.getText().toString();
-                else {
+                else
                     category = oldCategory.getSelectedItem().toString();
-                    if (!note.getCategory().equals(category)) {
-                        if (categoryHashMap.get(category).size() == 1) {
-                            categoryHashMap.remove(category);
-                            categories.remove(category);
-                        }
-                        categoryHashMap.get(category).remove(childPosition);
+
+                if (!note.getCategory().equals(category)) {
+                    if (categoryHashMap.get(note.getCategory()).size() == 1) {
+                        categoryHashMap.remove(category);
+                        categories.remove(category);
                     }
-                    note.setNote(titleET.getText().toString(), textET.getText().toString(),
-                            category,false);
+                    categoryHashMap.get(note.getCategory()).remove(childPosition);
+                }
+                note.setNote(titleET.getText().toString(), textET.getText().toString(),
+                        category, note.isStruck());
                     //ANTTI WAS HERE
 
-                }
                 if (categoryHashMap.containsKey(category)) {
                     categoryHashMap.get(category).set(childPosition, note);
                 }
@@ -271,13 +270,36 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
                     notes.add(note);
                     categoryHashMap.put(categories.get(categories.size() - 1), notes);
                 }
-                //storageOperations.addItem(note);
+                //storageOperations.editItem(note);
                 categoryAdapter.notifyDataSetChanged();
                 spa.notifyDataSetChanged();
             }
         });
 
         builder.create().show();
+    }
+
+    @Override
+    public void strikeItem(int groupPosition, int childPosition, boolean isStruck) {
+        Note note = categoryHashMap.get(categories.get(groupPosition)).get(childPosition);
+        note.setStruck(isStruck);
+        categoryHashMap.get(categories.get(groupPosition)).set(childPosition, note);
+        categoryAdapter.notifyDataSetChanged();
+        //storageOperations.editItem(note)
+    }
+
+    @Override
+    public void removeItem(int groupPosition, int childPosition) {
+        if (categoryHashMap.get(categories.get(groupPosition)).size() == 1)
+        {
+            categoryHashMap.remove(categories.get(groupPosition));
+            categories.remove(groupPosition);
+        }
+        else {
+            categoryHashMap.get(categories.get(groupPosition)).remove(childPosition);
+        }
+        categoryAdapter.notifyDataSetChanged();
+        //storageOperations.removeItem(categoryHashMap.get(categories.get(groupPosition)).get(childPosition));
     }
 
     @Override

@@ -19,6 +19,10 @@ Layout for individual Note item
         />
 
 
+    <TextView
+        android:id="@+id/noteDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:layout_width="wrap_content"
@@ -26,5 +30,17 @@ Layout for individual Note item
         android:id="@+id/itemBtn"
         android:text="@string/btnEdit"
         />
+
+    <Button
+        android:id="@+id/itemDone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btndone" />
+
+    <Button
+        android:id="@+id/itemRemove"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btnRemove" />
 
 </LinearLayout>

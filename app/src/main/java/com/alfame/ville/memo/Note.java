@@ -24,6 +24,7 @@ public class Note {
         this.text=text;
         this.category=category;
         this.struck = false;
+        this.date = new Date();
 
     }
 
