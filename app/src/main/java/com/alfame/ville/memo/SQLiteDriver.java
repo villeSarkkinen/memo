@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
 //Home of database code, if methods need to be called from MainActivity add them to the interfaces like these methods
-public class SQLiteDriver implements IStorageDriver,IStorageOperations {
+public class SQLiteDriver implements IStorageDriver {
 
     private String dbName,tableName,idName,titleName,textName,categoryName,deadlineName,struckName;
     private File file;

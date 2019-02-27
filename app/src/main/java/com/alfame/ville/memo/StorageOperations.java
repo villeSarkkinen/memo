@@ -3,7 +3,7 @@ package com.alfame.ville.memo;
 
 import java.util.ArrayList;
 
-public class StorageOperations implements IStorageOperations,IStorageDriver {
+public class StorageOperations implements IStorageOperations {
 
     public IStorageDriver driver;
 
