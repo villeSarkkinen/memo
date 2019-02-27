@@ -10,9 +10,9 @@ public class Note {
     private String title;
     private String text;
     private String category;
-    private Date date;
+
     private boolean struck;
-    //private Date deadline;
+    private Date deadline;
 
     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -24,25 +24,25 @@ public class Note {
         this.text=text;
         this.category=category;
         this.struck = false;
-        this.date = new Date();
+
+        deadline = new Date();
+
+        System.out.println(" Datecheck: "+dateFormat.format(deadline));
+
+
 
     }
 
-    //replace with this once date/deadline needed
-    /*
-    Note(int id, String title, String text, String category, Boolean struck, Date deadline){
+
+    Note(int id, String title, String text, String category, Date deadline){
         this.title=title;
         this.text=text;
         this.category=category;
-        this.struck=struck;
+        struck=false;
         this.deadline= deadline;
 
-
-        Date date = new Date();
-        System.out.println(" Datecheck: "+dateFormat.format(date));
-
     }
-    */
+
 
     public int getID(){
         return id;
@@ -60,8 +60,9 @@ public class Note {
         return category;
     }
 
-    public Date getDate() {
-        return date;
+    public String getDeadlineString(){
+        return dateFormat.format(deadline);
+
     }
 
     public boolean isStruck() {
@@ -71,6 +72,10 @@ public class Note {
     public void setStruck(Boolean struck){
         this.struck=struck;
 
+    }
+
+    public Date getDate(){
+        return deadline;
     }
 
 
