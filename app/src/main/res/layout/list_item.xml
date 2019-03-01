@@ -3,44 +3,66 @@
 Layout for individual Note item
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#AEC1EE">
+
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
         android:id="@+id/noteTitle"
-        />
-    <TextView
         android:layout_width="wrap_content"
+        android:layout_height="27dp"
+        android:layout_weight="1"
+        android:padding="1dp"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        tools:text="asdasd" />
+
+    <TextView
+        android:id="@+id/noteText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:id="@+id/noteText"
-        />
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"/>
 
 
     <TextView
         android:id="@+id/noteDate"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/itemBtn"
-        android:text="@string/btnEdit"
-        />
+        android:textColor="@android:color/black"
+        android:textSize="16sp"/>
 
-    <Button
-        android:id="@+id/itemDone"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/btndone" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/itemRemove"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btnRemove" />
+        <Button
+            android:id="@+id/itemBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/btnEdit" />
+
+        <Button
+            android:id="@+id/itemDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/btndone" />
+
+        <Button
+            android:id="@+id/itemRemove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/btnRemove" />
+    </LinearLayout>
 
 </LinearLayout>

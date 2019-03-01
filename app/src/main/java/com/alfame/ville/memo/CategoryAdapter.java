@@ -121,7 +121,7 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
 
         setTextAndStrike(title, note.getTitle(), note.isStruck());
         setTextAndStrike(text, note.getText(), note.isStruck());
-        setTextAndStrike(date, note.getDate().toString(), note.isStruck());
+        setTextAndStrike(date, note.getDeadlineString(), note.isStruck());
         return convertView;
     }
 
