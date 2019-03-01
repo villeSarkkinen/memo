@@ -86,6 +86,21 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
         switch (item.getItemId()){
             case R.id.removeAllOpt:
                 storageOperations.removeAll();
+                for (int i=categories.size()-1;i>-1;i--){
+                    System.out.println("i is: "+i);
+                    for(int k=categoryHashMap.get(categories.get(i)).size();k<-1;k--){
+                        System.out.println("k is: "+k);
+                        categoryHashMap.remove(categories.get(k));
+                        categoryAdapter.notifyDataSetChanged();
+                    }
+
+
+                    categoryHashMap.remove(categories.get(i));
+                    categories.remove(i);
+                    categoryAdapter.notifyDataSetChanged();
+                }
+                categoryAdapter.notifyDataSetChanged();
+
                 break;
 
             default:
@@ -255,39 +270,75 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
             public void onClick(DialogInterface dialog, int which) {
                 String category;
 
-                if (cb.isChecked())
+                if (cb.isChecked()){
                     category = newCategory.getText().toString();
-                else
+                }
+                else{
                     category = oldCategory.getSelectedItem().toString();
+                }
+                //redirect all edit things
+                editItemReal(groupPosition,childPosition,note,category,titleET.getText().toString(),textET.getText().toString());
+                //spa.notifyDataSetChanged();
 
-                if (!note.getCategory().equals(category)) {
-                    if (categoryHashMap.get(note.getCategory()).size() == 1) {
-                        categoryHashMap.remove(category);
-                        categories.remove(category);
-                    }
-                    categoryHashMap.get(note.getCategory()).remove(childPosition);
-                }
-                note.setNote(titleET.getText().toString(), textET.getText().toString(),
-                        category, note.isStruck());
 
-                if (categoryHashMap.containsKey(category)) {
-                    categoryHashMap.get(category).set(childPosition, note);
-                }
-                else
-                {
-                    categories.add(category);
-                    ArrayList<Note> notes = new ArrayList<>();
-                    notes.add(note);
-                    categoryHashMap.put(categories.get(categories.size() - 1), notes);
-                }
-                storageOperations.editItem(note);
-                categoryAdapter.notifyDataSetChanged();
-                spa.notifyDataSetChanged();
             }
         });
 
         builder.create().show();
     }
+
+    //redirect from dialog
+    private void editItemReal(int groupPosition, int childPosition,Note note,String category,
+                              String titleET,String textET) {
+
+        //moving to a new category
+        if (!note.getCategory().equals(category)) {
+
+            System.out.println("chpos "+childPosition);
+            categoryHashMap.get(categories.get(groupPosition)).remove(childPosition);
+            //categoryHashMap.get(category).remove(note);
+            //if last one in category, deletes category
+            if (categoryHashMap.get(categories.get(groupPosition)).size() == 0) {
+                categoryHashMap.remove(categories.get(groupPosition));
+                categories.remove(groupPosition);
+                //categoryAdapter.notifyDataSetChanged();
+            }
+            note.setNote(titleET, textET, category, note.isStruck());
+
+
+            //adds to category
+            if (categoryHashMap.containsKey(category)) {
+                categoryHashMap.get(category).add(note);
+            }
+            else//when category doesn't exist in hashMap adds category
+            {
+                categories.add(category);
+                ArrayList<Note> notes = new ArrayList<>();
+                notes.add(note);
+                categoryHashMap.put(categories.get(categories.size() - 1), notes);
+            }
+
+        }
+        else {//if category doesn't change
+            note.setNote(titleET, textET, category, note.isStruck());
+
+            if (categoryHashMap.containsKey(category)) {
+                categoryHashMap.get(category).set(childPosition, note);
+            }
+            else
+            {
+                categories.add(category);
+                ArrayList<Note> notes = new ArrayList<>();
+                notes.add(note);
+                categoryHashMap.put(categories.get(categories.size() - 1), notes);
+            }
+        }
+        storageOperations.editItem(note);
+        categoryAdapter.notifyDataSetChanged();
+
+    }
+
+
 
     @Override
     public void strikeItem(int groupPosition, int childPosition, boolean isStruck) {
@@ -300,17 +351,13 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
 
     @Override
     public void removeItem(int groupPosition, int childPosition) {
-
-        if (categoryHashMap.get(categories.get(groupPosition)).size() == 1)
-        {
-            storageOperations.removeItem(categoryHashMap.get(categories.get(groupPosition)).get(childPosition));
+        Note removeNote=categoryHashMap.get(categories.get(groupPosition)).get(childPosition);
+        categoryHashMap.get(categories.get(groupPosition)).remove(childPosition);
+        if (categoryHashMap.get(categories.get(groupPosition)).size() == 0)        {
             categoryHashMap.remove(categories.get(groupPosition));
             categories.remove(groupPosition);
         }
-        else {
-            storageOperations.removeItem(categoryHashMap.get(categories.get(groupPosition)).get(childPosition));
-            categoryHashMap.get(categories.get(groupPosition)).remove(childPosition);
-        }
+        storageOperations.removeItem(removeNote);
         categoryAdapter.notifyDataSetChanged();
 
 

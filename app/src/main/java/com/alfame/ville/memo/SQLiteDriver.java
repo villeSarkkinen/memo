@@ -42,6 +42,7 @@ public class SQLiteDriver implements IStorageDriver {
 
     @Override
     public ArrayList loadItemsList() {
+        _createDatabase();
         ArrayList<Note> noteList = new ArrayList<>();
         String sql;
         System.out.println("loadItemsList()");
@@ -78,6 +79,7 @@ public class SQLiteDriver implements IStorageDriver {
         for(int i=0;i<noteList.size();i++){
             noteList.get(i).printNote();
         }
+        database.close();
         return noteList;
     }
 
@@ -112,14 +114,16 @@ public class SQLiteDriver implements IStorageDriver {
                     // "'"+note.getDeadlineString()+"'," +
                     "'"+String.valueOf(note.isStruck()).toUpperCase()+"'"+
                     ");";
+            System.out.println("IDCOUNT: "+idCount+" SQL CODE: "+sql);
             database.execSQL(sql);
             idCount++;
-            System.out.println("SQL CODE: "+sql);
         }
         catch (SQLiteException e){
             System.out.println("AddItem e: "+e);
 
         }
+        database.close();
+
 
     }
 
@@ -144,15 +148,17 @@ public class SQLiteDriver implements IStorageDriver {
                     categoryName+"='"+note.getCategory()+"', "+
                     struckName+"='"+String.valueOf(note.isStruck()).toUpperCase()+"', "+
                     //deadlineName+"='"+note.getDeadlineString()+"', "+
-                    categoryName+"='"+note.getCategory()+"', "+
+                    categoryName+"='"+note.getCategory()+"' "+
 
                     " WHERE "+idName+"="+note.getID()+";";
 
+            System.out.println("editItem sql: "+sql);
             database.execSQL(sql);
         }
         catch (SQLiteException e){
             System.out.println("editItem e: "+e);
         }
+        database.close();
 
 
     }
@@ -169,6 +175,7 @@ public class SQLiteDriver implements IStorageDriver {
         catch (SQLException e){
             System.out.println("removeItem e: "+e);
         }
+        database.close();
     }
 
     @Override
@@ -185,15 +192,14 @@ public class SQLiteDriver implements IStorageDriver {
         catch (SQLiteException e){
             System.out.println("removeAll e: "+e);
         }
+        database.close();
 
 
     }
 
     @Override
     public void createDatabase() {
-
         System.out.println("createDatabase!");
-
         try{
             //if file exists, only connects to database
             if(file.length()<1){
@@ -211,8 +217,6 @@ public class SQLiteDriver implements IStorageDriver {
                 System.out.println("createDatabase file exists");
                 _createDatabase();
                 _setidCounter();
-                databaseTesty(1);
-                databaseTesty(2);
                 //databaseTesty(1);
                 //databaseTesty(2);
 
@@ -241,20 +245,23 @@ public class SQLiteDriver implements IStorageDriver {
         Cursor cl = database.rawQuery(sql,null);
         cl.moveToFirst();
         while(!cl.isAfterLast()){
-            if(idCount<cl.getInt(0)){
+            if(idCount<=cl.getInt(0)){
                 idCount=cl.getInt(0);
-                idCount+=2;
+                idCount+=1;
             }
             cl.moveToNext();
         }
         cl.close();
         //ArrayList<Note> arrayList = loadItemsList();
 
+        database.close();
+
 
     }
 
 
     private void databaseTesty(int selection) {//for testing
+        _createDatabase();
         /** Testy
          1 for testing write
          2 for reading
@@ -268,9 +275,9 @@ public class SQLiteDriver implements IStorageDriver {
                 //WRITING
                 Note newNote = new Note(idCount,"NJOICE","I FEEL IT and THINGS","Anttis kaka");
                 addItem(newNote);
-                Note newNote1 = new Note(idCount,"Wwenks","wih wuah wauau ankan kanka","Anttis kaka");
+                Note newNote1 = new Note(idCount,"Wwenks","wih wuah wauau ankan kanka","Anttis kaka3");
                 addItem(newNote1);
-                Note newNote2 = new Note(idCount,"Hi","How are yeeet","Anttis kaka");
+                Note newNote2 = new Note(idCount,"Hi","How are yeeet","Anttis kaka1");
                 addItem(newNote2);
                 break;
 
@@ -291,6 +298,7 @@ public class SQLiteDriver implements IStorageDriver {
                 break;
 
         }
+        database.close();
     }
 
     private void createTables() {
@@ -327,6 +335,7 @@ public class SQLiteDriver implements IStorageDriver {
             System.out.println("createTables e: "+e);
 
         }
+        database.close();
 
     }
 
@@ -340,7 +349,9 @@ public class SQLiteDriver implements IStorageDriver {
 
 
     public int getidCount(){
+        _createDatabase();
         _setidCounter();
+        database.close();
         return  idCount;
     }
 }
