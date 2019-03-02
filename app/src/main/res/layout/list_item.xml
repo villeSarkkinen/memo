@@ -6,8 +6,11 @@ Layout for individual Note item
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/prime2"
     android:orientation="vertical"
-    android:background="#AEC1EE">
+    android:layout_marginLeft="@dimen/padGen"
+    android:layout_marginRight="@dimen/padGen"
+    >
 
 
     <TextView
@@ -15,9 +18,9 @@ Layout for individual Note item
         android:layout_width="wrap_content"
         android:layout_height="27dp"
         android:layout_weight="1"
-        android:padding="1dp"
         android:gravity="center"
-        android:textColor="@android:color/black"
+        android:padding="1dp"
+        android:textColor="@android:color/white"
         android:textSize="14sp"
         tools:text="asdasd" />
 
@@ -25,18 +28,18 @@ Layout for individual Note item
         android:id="@+id/noteText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
         android:gravity="center"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"/>
+        android:padding="16dp"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
 
 
     <TextView
         android:id="@+id/noteDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"/>
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,25 +47,31 @@ Layout for individual Note item
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/itemBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btnEdit" />
-
-        <Button
             android:id="@+id/itemDone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/btndone" />
+            android:background="@color/positive"
+            android:text="@string/btndone"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/itemBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/neutral"
+            android:text="@string/btnEdit"
+            android:textColor="@android:color/black" />
 
         <Button
             android:id="@+id/itemRemove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/btnRemove" />
+            android:background="@color/negative"
+            android:text="@string/btnRemove"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
 </LinearLayout>

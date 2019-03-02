@@ -11,14 +11,17 @@
         android:id="@+id/btnAdd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/positive"
         android:text="@string/titlAdd"
-        />
+        android:textColor="@android:color/white" />
 
     <ExpandableListView
         android:id="@+id/noteListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20px">
+        android:layout_marginTop="20px"
+        android:padding="@dimen/padGen"
+        >
 
     </ExpandableListView>
 

@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,8 +31,6 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
     private CategoryAdapter categoryAdapter;
     private List<String> categories;
     private HashMap<String, List<Note>> categoryHashMap;
-    //private Spinner sp;
-    //private EditText et;
     IStorageOperations storageOperations;
 
 
@@ -41,11 +41,6 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //LayoutInflater inflater = LayoutInflater.from(this);
-
-        //View v = inflater.inflate(R.layout.dialog_layout, null);
-        //sp = v.findViewById(R.id.noteOldCategory);
 
         //Setting up SQLserver as method of operations
         res = getResources();
@@ -86,21 +81,9 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
         switch (item.getItemId()){
             case R.id.removeAllOpt:
                 storageOperations.removeAll();
-                for (int i=categories.size()-1;i>-1;i--){
-                    System.out.println("i is: "+i);
-                    for(int k=categoryHashMap.get(categories.get(i)).size();k<-1;k--){
-                        System.out.println("k is: "+k);
-                        categoryHashMap.remove(categories.get(k));
-                        categoryAdapter.notifyDataSetChanged();
-                    }
-
-
-                    categoryHashMap.remove(categories.get(i));
-                    categories.remove(i);
-                    categoryAdapter.notifyDataSetChanged();
-                }
+                categoryHashMap.clear();
+                categories.clear();
                 categoryAdapter.notifyDataSetChanged();
-
                 break;
 
             default:
@@ -186,18 +169,23 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String category;
+                if (titleET.getText().toString().equals("") || textET.getText().toString().equals("") ||
+                        (cb.isChecked() && newCategory.getText().toString().equals("")) ||
+                        !cb.isChecked() && categories.size() == 0)
+                {
+                    validationToast();
+                    return;
+                }
                 if (cb.isChecked())
                     category = newCategory.getText().toString();
                 else
                     category = oldCategory.getSelectedItem().toString();
 
 
-                Note note = new Note(storageOperations.getidCount(),titleET.getText().toString(), textET.getText().toString(), category);
+                Note note = new Note(storageOperations.getidCount(), titleET.getText().toString(), textET.getText().toString(), category);
                 if (categoryHashMap.containsKey(category)) {
                     categoryHashMap.get(category).add(note);
-                }
-                else
-                {
+                } else {
                     categories.add(category);
                     ArrayList<Note> notes = new ArrayList<>();
                     notes.add(note);
@@ -210,6 +198,10 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
         });
 
         builder.create().show();
+    }
+
+    private void validationToast() {
+        Toast.makeText(this, R.string.toastMsg, Toast.LENGTH_LONG).show();
     }
 
 
@@ -269,7 +261,13 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String category;
-
+                if (titleET.getText().toString().equals("") || textET.getText().toString().equals("") ||
+                        (cb.isChecked() && newCategory.getText().toString().equals("")) ||
+                        !cb.isChecked() && categories.size() == 0)
+                {
+                    validationToast();
+                    return;
+                }
                 if (cb.isChecked()){
                     category = newCategory.getText().toString();
                 }
@@ -278,9 +276,6 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
                 }
                 //redirect all edit things
                 editItemReal(groupPosition,childPosition,note,category,titleET.getText().toString(),textET.getText().toString());
-                //spa.notifyDataSetChanged();
-
-
             }
         });
 
@@ -296,12 +291,10 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
 
             System.out.println("chpos "+childPosition);
             categoryHashMap.get(categories.get(groupPosition)).remove(childPosition);
-            //categoryHashMap.get(category).remove(note);
             //if last one in category, deletes category
             if (categoryHashMap.get(categories.get(groupPosition)).size() == 0) {
                 categoryHashMap.remove(categories.get(groupPosition));
                 categories.remove(groupPosition);
-                //categoryAdapter.notifyDataSetChanged();
             }
             note.setNote(titleET, textET, category, note.isStruck());
 
