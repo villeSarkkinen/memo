@@ -12,6 +12,11 @@
     <string name="btnUndo">Undo</string>
 
     <string name="toastMsg">All fields are required</string>
+    <string name="toastClr">All items cleared!</string>
+
+    <string name="clrTitle">Clear all</string>
+    <string name="confirmClr">Remove all items?</string>
+
 
     <string name="lblTitle">Title</string>
     <string name="lblText">Text</string>
@@ -26,16 +31,5 @@
     <string name="noteDate">Date</string>
     <string name="notePriority">Priority</string>
     <string name="noteStruck">Struck</string>
-
-
-    <string-array name="categoryList">
-        <item>Shopping</item>
-        <item>School</item>
-        <item>Work</item>
-        <item>Hobby1</item>
-        <item>Hobby2</item>
-        <item>Misc</item>
-        <item>All</item>
-    </string-array>
     
 </resources>

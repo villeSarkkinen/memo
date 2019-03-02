@@ -19,17 +19,15 @@ Layout for individual Note item
         android:layout_height="27dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:padding="1dp"
         android:textColor="@android:color/white"
-        android:textSize="14sp"
-        tools:text="asdasd" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/noteText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="16dp"
+        android:padding="@dimen/padGen"
         android:textColor="@android:color/white"
         android:textSize="16sp" />
 
