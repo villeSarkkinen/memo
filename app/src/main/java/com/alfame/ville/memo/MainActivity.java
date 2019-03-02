@@ -31,10 +31,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
     private CategoryAdapter categoryAdapter;
     private List<String> categories;
     private HashMap<String, List<Note>> categoryHashMap;
-    IStorageOperations storageOperations;
-
-
-
+    private IStorageOperations storageOperations;
     private Resources res;
 
     @Override
@@ -46,28 +43,20 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
         res = getResources();
         File file = this.getDatabasePath(res.getString(R.string.dbName));
         //file.delete();
-        System.out.println(this.getDatabasePath(res.getString(R.string.dbName)));
-        //ANTTI need filepath for database!!!
         storageOperations = new StorageOperations(new SQLiteDriver(file));
 
-
         listView = findViewById(R.id.noteListView);
-
         categories = new ArrayList<>();
         categoryHashMap = new HashMap<>();
-
         categoryAdapter = new CategoryAdapter(this, categories, categoryHashMap);
         listView.setAdapter(categoryAdapter);
-
 
         Button addBtn = findViewById(R.id.btnAdd);
         addBtn.setOnClickListener(this);
 
         CategoryAdapter.setMainActivityActionListener(this);
 
-
         getNotes();
-        System.out.println(storageOperations.getidCount());
     }
 
     @Override
@@ -80,10 +69,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.removeAllOpt:
-                storageOperations.removeAll();
-                categoryHashMap.clear();
-                categories.clear();
-                categoryAdapter.notifyDataSetChanged();
+                launchRemoveAllDialog();
                 break;
 
             default:
@@ -93,14 +79,31 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
         return super.onOptionsItemSelected(item);
     }
 
+    private void launchRemoveAllDialog() {
+
+        AlertDialog.Builder bldr = new AlertDialog.Builder(this);
+        bldr.setTitle(R.string.clrTitle);
+        bldr.setPositiveButton(R.string.btnOk, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                storageOperations.removeAll();
+                categoryHashMap.clear();
+                categories.clear();
+                Toast.makeText(getApplicationContext(),R.string.toastClr,Toast.LENGTH_LONG).show();
+                categoryAdapter.notifyDataSetChanged();
+
+            }
+        });
+        bldr.setCancelable(true);
+        bldr.setNeutralButton(R.string.btnCancel,null);
+        bldr.create().show();
+    }
+
     //get notes from database
     private void getNotes() {
-        System.out.println("notesList!");
         ArrayList<Note> notesList;
         notesList=storageOperations.loadItemsList();
-
         if(notesList!=null){
-            System.out.println("notesList not null!");
             for(int i=0;i<notesList.size();i++){
                 if (categoryHashMap.containsKey(notesList.get(i).getCategory())) {
                     categoryHashMap.get(notesList.get(i).getCategory()).add(notesList.get(i));
@@ -116,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
             }
         }else System.out.println("notesList null!");
     }
-
 
     private void launchAddDialog() {
 
@@ -181,8 +183,12 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
                 else
                     category = oldCategory.getSelectedItem().toString();
 
+                //remove apostrophes for sql
+                category=category.replace("'","");
+                String title=titleET.getText().toString().replace("'","");
+                String text=textET.getText().toString().replace("'","");
 
-                Note note = new Note(storageOperations.getidCount(), titleET.getText().toString(), textET.getText().toString(), category);
+                Note note = new Note(storageOperations.getidCount(), title, text, category);
                 if (categoryHashMap.containsKey(category)) {
                     categoryHashMap.get(category).add(note);
                 } else {
@@ -203,7 +209,6 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
     private void validationToast() {
         Toast.makeText(this, R.string.toastMsg, Toast.LENGTH_LONG).show();
     }
-
 
     @Override
     public void launchEditDialog(final int groupPosition, final int childPosition, final Note note) {
@@ -248,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
 
         });
 
-        builder.setTitle(R.string.titlAdd);
+        builder.setTitle(R.string.titlEdit);
         builder.setView(v);
         builder.setNegativeButton(R.string.btnCancel, new DialogInterface.OnClickListener() {
             @Override
@@ -261,6 +266,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String category;
+
                 if (titleET.getText().toString().equals("") || textET.getText().toString().equals("") ||
                         (cb.isChecked() && newCategory.getText().toString().equals("")) ||
                         !cb.isChecked() && categories.size() == 0)
@@ -274,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
                 else{
                     category = oldCategory.getSelectedItem().toString();
                 }
+                category.replace("'","");
                 //redirect all edit things
                 editItemReal(groupPosition,childPosition,note,category,titleET.getText().toString(),textET.getText().toString());
             }
@@ -282,9 +289,14 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
         builder.create().show();
     }
 
-    //redirect from dialog
+    //redirect from EditDialog
     private void editItemReal(int groupPosition, int childPosition,Note note,String category,
                               String titleET,String textET) {
+
+        //remove apostrophes
+        category=category.replace("'","");
+        titleET=titleET.replace("'","");
+        textET=textET.replace("'","");
 
         //moving to a new category
         if (!note.getCategory().equals(category)) {
@@ -296,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
                 categoryHashMap.remove(categories.get(groupPosition));
                 categories.remove(groupPosition);
             }
-            note.setNote(titleET, textET, category, note.isStruck());
+            note.setNote(titleET, textET, category);
 
 
             //adds to category
@@ -313,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements CategoryAdapter.I
 
         }
         else {//if category doesn't change
-            note.setNote(titleET, textET, category, note.isStruck());
+            note.setNote(titleET, textET, category);
 
             if (categoryHashMap.containsKey(category)) {
                 categoryHashMap.get(category).set(childPosition, note);

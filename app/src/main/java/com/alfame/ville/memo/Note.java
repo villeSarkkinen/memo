@@ -1,23 +1,24 @@
 package com.alfame.ville.memo;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Note {
 
-    private int id;
-    private String title;
+    private int id;//id used for database operations
+    private String title;//
     private String text;
     private String category;
 
-    private boolean struck;
-    private Date deadline;
+    private boolean struck;//Note marked as complete by user
+    private Date deadline;//used to display date of creation instead of deadline
 
     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 
-    //dev phase constructor
+    //constructor for adding Note
     Note(int id,String title,String text,String category){
         this.id=id;
         this.title=title;
@@ -34,12 +35,18 @@ public class Note {
     }
 
 
-    Note(int id, String title, String text, String category, Date deadline){
+    //used when loading Notes from database
+    Note(int id, String title, String text, String category, String deadline){
+        this.id=id;
         this.title=title;
         this.text=text;
         this.category=category;
-        struck=false;
-        this.deadline= deadline;
+        struck=false;//struck set from loadItemsList
+        try {
+            this.deadline= dateFormat.parse(deadline);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -62,7 +69,6 @@ public class Note {
 
     public String getDeadlineString(){
         return dateFormat.format(deadline);
-
     }
 
     public boolean isStruck() {
@@ -74,30 +80,23 @@ public class Note {
 
     }
 
-    public Date getDate(){
-        return deadline;
-    }
-
-
     //easier to set all at once thru edit
-    public void setNote(String title, String text, String category, boolean struck){
+    public void setNote(String title, String text, String category){
         this.title=title;
         this.text=text;
         this.category=category;
-        this.struck=struck;
 
-        Date date = new Date();
-        System.out.println(" Datecheck: "+dateFormat.format(date));
     }
+
 
     public void printNote(){
         System.out.println(
-
-                "ID: "+id+
-                        "Title: "+title+
-                        "Text: "+text
-                        +"Category: "+category
-                        +"Struck: "+struck
+                "printNote: "+id
+                        +" Title: "+title
+                        +" Text: "+text
+                        +" Category: "+category
+                        +" Date: "+getDeadlineString()
+                        +" Struck: "+struck
         );
     }
 }

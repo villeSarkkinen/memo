@@ -1,6 +1,7 @@
 package com.alfame.ville.memo;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -127,8 +128,9 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
 
     private void setTextAndStrike(TextView v, String txt, boolean strike) {
         v.setText(txt);
-        if (strike)
+        if (strike){
             v.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        }
         else
             v.setPaintFlags(0);
     }
